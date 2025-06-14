@@ -61,7 +61,7 @@ namespace GitHub.Runner.Worker
             ArgUtil.NotNull(message, nameof(message));
 
             // Create a new timeline record for 'Set up job'
-            IExecutionContext context = jobContext.CreateChild(Guid.NewGuid(), "Set up job", $"{nameof(JobExtension)}_Init", null, null, ActionRunStage.Pre);
+            IExecutionContext context = jobContext.CreateChild(Guid.NewGuid(), "Set up job (but patched hehe)", $"{nameof(JobExtension)}_Init", null, null, ActionRunStage.Pre);
             context.StepTelemetry.Type = "runner";
             context.StepTelemetry.Action = "setup_job";
 
