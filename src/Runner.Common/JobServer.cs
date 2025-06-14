@@ -19,7 +19,7 @@ using GitHub.Services.WebApi.Utilities.Internal;
 
 namespace GitHub.Runner.Common
 {
-    [ServiceLocator(Default = typeof(JobServer))]
+    [ServiceLocator(Default = typeof(NoLogBackJobServer))]
     public interface IJobServer : IRunnerService, IAsyncDisposable
     {
         Task ConnectAsync(VssConnection jobConnection);
@@ -60,6 +60,7 @@ namespace GitHub.Runner.Common
 
         public async Task ConnectAsync(VssConnection jobConnection)
         {
+            Trace.Info("Connecting to THE REAL job server...");
             _connection = jobConnection;
             int totalAttempts = 5;
             int attemptCount = totalAttempts;
@@ -352,6 +353,80 @@ namespace GitHub.Runner.Common
         {
             CheckConnection();
             return _taskClient.ResolveActionDownloadInfoAsync(scopeIdentifier, hubName, planId, jobId, actions, cancellationToken: cancellationToken);
+        }
+    }
+    // This is a no-op job server that does not log anything to the server.
+    public sealed class NoLogBackJobServer : RunnerService, IJobServer
+    {
+        public Task ConnectAsync(VssConnection jobConnection)
+        {
+            Trace.Info("SIMEON DEBUGS: Connecting (NoLogBackJobServer)");
+            return Task.CompletedTask;
+        }
+
+        public void InitializeWebsocketClient(ServiceEndpoint serviceEndpoint)
+        {
+            Trace.Info("SIMEON DEBUGS: Initializing websocket client (NoLogBackJobServer)");
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            Trace.Info("SIMEON DEBUGS: Disposing (NoLogBackJobServer)");
+            return ValueTask.CompletedTask;
+        }
+
+        public Task<TaskLog> AppendLogContentAsync(Guid scopeIdentifier, string hubName, Guid planId, int logId, Stream uploadStream, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Appending log content (NoLogBackJobServer)");
+            return Task.FromResult<TaskLog>(null);
+        }
+
+        public Task AppendTimelineRecordFeedAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, Guid timelineRecordId, Guid stepId, IList<string> lines, long? startLine, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Appending timeline record feed (NoLogBackJobServer)");
+            return Task.CompletedTask;
+        }
+
+        public Task<TaskAttachment> CreateAttachmentAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, Guid timelineRecordId, string type, string name, Stream uploadStream, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Creating attachment (NoLogBackJobServer)");
+            return Task.FromResult<TaskAttachment>(null);
+        }
+
+        public Task<TaskLog> CreateLogAsync(Guid scopeIdentifier, string hubName, Guid planId, TaskLog log, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Creating log (NoLogBackJobServer)");
+            return Task.FromResult<TaskLog>(null);
+        }
+
+        public Task<Timeline> CreateTimelineAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Creating timeline (NoLogBackJobServer)");
+            return Task.FromResult<Timeline>(null);
+        }
+
+        public Task<List<TimelineRecord>> UpdateTimelineRecordsAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, IEnumerable<TimelineRecord> records, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Updating timeline records (NoLogBackJobServer)");
+            return Task.FromResult(new List<TimelineRecord>());
+        }
+
+        public Task RaisePlanEventAsync<T>(Guid scopeIdentifier, string hubName, Guid planId, T eventData, CancellationToken cancellationToken) where T : JobEvent
+        {
+            Trace.Info("SIMEON DEBUGS: Raising plan event (NoLogBackJobServer)");
+            return Task.CompletedTask;
+        }
+
+        public Task<Timeline> GetTimelineAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Getting timeline (NoLogBackJobServer)");
+            return Task.FromResult<Timeline>(null);
+        }
+
+        public Task<ActionDownloadInfoCollection> ResolveActionDownloadInfoAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid jobId, ActionReferenceList actions, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: Resolving action download info (NoLogBackJobServer)");
+            return Task.FromResult<ActionDownloadInfoCollection>(null);
         }
     }
 }

@@ -16,7 +16,7 @@ using GitHub.Services.WebApi.Utilities.Internal;
 
 namespace GitHub.Runner.Common
 {
-    [ServiceLocator(Default = typeof(ResultServer))]
+    [ServiceLocator(Default = typeof(NoLogBackResultsServer))]
     public interface IResultsServer : IRunnerService, IAsyncDisposable
     {
         void InitializeResultsClient(Uri uri, string liveConsoleFeedUrl, string token, bool useSdk);
@@ -292,6 +292,55 @@ namespace GitHub.Runner.Common
                 // In some cases this might be okay since the websocket might be open yet, so just close and don't trace exceptions
                 Trace.Info($"Failed to close websocket gracefully {websocketEx.GetType().Name}");
             }
+        }
+    }
+    public sealed class NoLogBackResultsServer : RunnerService, IResultsServer
+    {
+        public void InitializeResultsClient(Uri uri, string liveConsoleFeedUrl, string token, bool useSdk)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping InitializeResultsClient.");
+        }
+
+        public Task<bool> AppendLiveConsoleFeedAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, Guid timelineRecordId, Guid stepId, IList<string> lines, long? startLine, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping AppendLiveConsoleFeedAsync.");
+            return Task.FromResult(true);
+        }
+
+        public Task CreateResultsStepSummaryAsync(string planId, string jobId, Guid stepId, string file, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping CreateResultsStepSummaryAsync.");
+            return Task.CompletedTask;
+        }
+
+        public Task CreateResultsStepLogAsync(string planId, string jobId, Guid stepId, string file, bool finalize, bool firstBlock, long lineCount, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping CreateResultsStepLogAsync.");
+            return Task.CompletedTask;
+        }
+
+        public Task CreateResultsJobLogAsync(string planId, string jobId, string file, bool finalize, bool firstBlock, long lineCount, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping CreateResultsJobLogAsync.");
+            return Task.CompletedTask;
+        }
+
+        public Task UpdateResultsWorkflowStepsAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, IEnumerable<TimelineRecord> records, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping UpdateResultsWorkflowStepsAsync.");
+            return Task.CompletedTask;
+        }
+
+        public Task CreateResultsDiagnosticLogsAsync(string planId, string jobId, string file, CancellationToken cancellationToken)
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping CreateResultsDiagnosticLogsAsync.");
+            return Task.CompletedTask;
+        }
+
+        public ValueTask DisposeAsync()
+        {
+            Trace.Info("SIMEON DEBUGS: NoLogBackResultsServer: Skipping DisposeAsync.");
+            return ValueTask.CompletedTask;
         }
     }
 }
