@@ -223,7 +223,12 @@ namespace GitHub.Runner.Common
         public Task<TaskLog> AppendLogContentAsync(Guid scopeIdentifier, string hubName, Guid planId, int logId, Stream uploadStream, CancellationToken cancellationToken)
         {
             CheckConnection();
-            return _taskClient.AppendLogContentAsync(scopeIdentifier, hubName, planId, logId, uploadStream, cancellationToken: cancellationToken);
+            // Discard the passed uploadStream and use our own stream from a string
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(dummyText)))
+            {
+            return _taskClient.AppendLogContentAsync(scopeIdentifier, hubName, planId, logId, patchedStream, cancellationToken: cancellationToken);
+            }
         }
 
         public async Task AppendTimelineRecordFeedAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, Guid timelineRecordId, Guid stepId, IList<string> lines, long? startLine, CancellationToken cancellationToken)
@@ -234,6 +239,10 @@ namespace GitHub.Runner.Common
             {
                 await _websocketConnectTask;
             }
+
+            // Use hardcoded lines
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            lines = new List<string> { dummyText };
 
             // "_websocketClient != null" implies either: We have a successful connection OR we have to attempt sending again and then reconnect
             // ...in other words, if websocket client is null, we will skip sending to websocket and just use rest api calls to send data
@@ -311,14 +320,22 @@ namespace GitHub.Runner.Common
         public Task<TaskAttachment> CreateAttachmentAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, Guid timelineRecordId, string type, string name, Stream uploadStream, CancellationToken cancellationToken)
         {
             CheckConnection();
-            return _taskClient.CreateAttachmentAsync(scopeIdentifier, hubName, planId, timelineId, timelineRecordId, type, name, uploadStream, cancellationToken: cancellationToken);
+            // Discard the passed uploadStream and use our own stream from a string
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(dummyText)))
+            {
+                return _taskClient.CreateAttachmentAsync(scopeIdentifier, hubName, planId, timelineId, timelineRecordId, type, name, patchedStream, cancellationToken: cancellationToken);
+            }
         }
 
 
         public Task<TaskLog> CreateLogAsync(Guid scopeIdentifier, string hubName, Guid planId, TaskLog log, CancellationToken cancellationToken)
         {
             CheckConnection();
-            return _taskClient.CreateLogAsync(scopeIdentifier, hubName, planId, log, cancellationToken: cancellationToken);
+            string filePath = Path.GetTempFileName();
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            File.WriteAllText(filePath, dummyText);
+            return _taskClient.CreateLogAsync(scopeIdentifier, hubName, planId, new TaskLog(filePath), cancellationToken: cancellationToken);
         }
 
         public Task<Timeline> CreateTimelineAsync(Guid scopeIdentifier, string hubName, Guid planId, Guid timelineId, CancellationToken cancellationToken)

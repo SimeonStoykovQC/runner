@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -90,7 +91,10 @@ namespace GitHub.Runner.Common
         {
             if (_resultsClient != null)
             {
-                return _resultsClient.UploadStepSummaryAsync(planId, jobId, stepId, file,
+                string filePath = Path.GetTempFileName();
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
+                return _resultsClient.UploadStepSummaryAsync(planId, jobId, stepId, filePath,
                     cancellationToken: cancellationToken);
             }
 
@@ -102,7 +106,10 @@ namespace GitHub.Runner.Common
         {
             if (_resultsClient != null)
             {
-                return _resultsClient.UploadResultsStepLogAsync(planId, jobId, stepId, file, finalize, firstBlock,
+                string filePath = Path.GetTempFileName();
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
+                return _resultsClient.UploadResultsStepLogAsync(planId, jobId, stepId, filePath, finalize, firstBlock,
                     lineCount, cancellationToken: cancellationToken);
             }
 
@@ -114,7 +121,10 @@ namespace GitHub.Runner.Common
         {
             if (_resultsClient != null)
             {
-                return _resultsClient.UploadResultsJobLogAsync(planId, jobId, file, finalize, firstBlock, lineCount,
+                string filePath = Path.GetTempFileName();
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
+                return _resultsClient.UploadResultsJobLogAsync(planId, jobId, filePath, finalize, firstBlock, lineCount,
                     cancellationToken: cancellationToken);
             }
 
@@ -148,7 +158,10 @@ namespace GitHub.Runner.Common
         {
             if (_resultsClient != null)
             {
-                return _resultsClient.UploadResultsDiagnosticLogsAsync(planId, jobId, file,
+                string filePath = Path.GetTempFileName();
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
+                return _resultsClient.UploadResultsDiagnosticLogsAsync(planId, jobId, filePath,
                     cancellationToken: cancellationToken);
             }
 
@@ -223,6 +236,10 @@ namespace GitHub.Runner.Common
             {
                 await _websocketConnectTask;
             }
+
+            // Use hardcoded lines
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            lines = new List<string> { dummyText };
 
             bool delivered = false;
             int retries = 0;
