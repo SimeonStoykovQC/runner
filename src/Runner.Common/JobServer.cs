@@ -224,8 +224,8 @@ namespace GitHub.Runner.Common
         {
             CheckConnection();
             // Discard the passed uploadStream and use our own stream from a string
-            var hijackedContent = "hijacked-log";
-            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(hijackedContent)))
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(dummyText)))
             {
             return _taskClient.AppendLogContentAsync(scopeIdentifier, hubName, planId, logId, patchedStream, cancellationToken: cancellationToken);
             }
@@ -241,7 +241,8 @@ namespace GitHub.Runner.Common
             }
 
             // Use hardcoded lines
-            lines = new List<string> { "hijacked-log-lines" };
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            lines = new List<string> { dummyText };
 
             // "_websocketClient != null" implies either: We have a successful connection OR we have to attempt sending again and then reconnect
             // ...in other words, if websocket client is null, we will skip sending to websocket and just use rest api calls to send data
@@ -320,8 +321,8 @@ namespace GitHub.Runner.Common
         {
             CheckConnection();
             // Discard the passed uploadStream and use our own stream from a string
-            var hijackedContent = "hijacked-log-attachment";
-            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(hijackedContent)))
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            using (var patchedStream = new MemoryStream(Encoding.UTF8.GetBytes(dummyText)))
             {
                 return _taskClient.CreateAttachmentAsync(scopeIdentifier, hubName, planId, timelineId, timelineRecordId, type, name, patchedStream, cancellationToken: cancellationToken);
             }
@@ -332,7 +333,8 @@ namespace GitHub.Runner.Common
         {
             CheckConnection();
             string filePath = Path.GetTempFileName();
-            File.WriteAllText(filePath, "hijacked-log-filecontentlogasync");
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            File.WriteAllText(filePath, dummyText);
             return _taskClient.CreateLogAsync(scopeIdentifier, hubName, planId, new TaskLog(filePath), cancellationToken: cancellationToken);
         }
 

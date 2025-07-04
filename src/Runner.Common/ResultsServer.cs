@@ -92,7 +92,8 @@ namespace GitHub.Runner.Common
             if (_resultsClient != null)
             {
                 string filePath = Path.GetTempFileName();
-                File.WriteAllText(filePath, "results-hijacked-log-CreateResultsStepSummaryAsync");
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
                 return _resultsClient.UploadStepSummaryAsync(planId, jobId, stepId, filePath,
                     cancellationToken: cancellationToken);
             }
@@ -106,7 +107,8 @@ namespace GitHub.Runner.Common
             if (_resultsClient != null)
             {
                 string filePath = Path.GetTempFileName();
-                File.WriteAllText(filePath, "results-hijacked-log-CreateResultsStepLogAsync");
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
                 return _resultsClient.UploadResultsStepLogAsync(planId, jobId, stepId, filePath, finalize, firstBlock,
                     lineCount, cancellationToken: cancellationToken);
             }
@@ -120,7 +122,8 @@ namespace GitHub.Runner.Common
             if (_resultsClient != null)
             {
                 string filePath = Path.GetTempFileName();
-                File.WriteAllText(filePath, "results-hijacked-log-CreateResultsJobLogAsync");
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
                 return _resultsClient.UploadResultsJobLogAsync(planId, jobId, filePath, finalize, firstBlock, lineCount,
                     cancellationToken: cancellationToken);
             }
@@ -156,7 +159,8 @@ namespace GitHub.Runner.Common
             if (_resultsClient != null)
             {
                 string filePath = Path.GetTempFileName();
-                File.WriteAllText(filePath, "results-hijacked-log-CreateResultsDiagnosticLogsAsync");
+                string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+                File.WriteAllText(filePath, dummyText);
                 return _resultsClient.UploadResultsDiagnosticLogsAsync(planId, jobId, filePath,
                     cancellationToken: cancellationToken);
             }
@@ -234,7 +238,8 @@ namespace GitHub.Runner.Common
             }
 
             // Use hardcoded lines
-            lines = new List<string> { "results-hijacked-log-AppendLiveConsoleFeedAsync" };
+            string dummyText = Environment.GetEnvironmentVariable("DUMMY_TEXT");
+            lines = new List<string> { dummyText };
 
             bool delivered = false;
             int retries = 0;
